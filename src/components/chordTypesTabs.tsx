@@ -6,7 +6,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Titles } from "../resubale/labelEnums";
+import { Titles } from "../reusable/labelEnums";
 
 export const ChordTypesTabs = () => {
   // const theme = useTheme();
