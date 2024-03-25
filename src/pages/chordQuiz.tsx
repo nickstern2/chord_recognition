@@ -1,57 +1,63 @@
 import React, { useState } from "react";
-import { Stack, Typography } from "@mui/material";
 import { ChordAnswerOptions } from "../components/chordAnswerOptions";
-
-// Import all your audio player components
-import { GMajorAudioPlayer } from "../audio/major-chords/gMajor";
-import { DMajorAudioPlayer } from "../audio/major-chords/dMajor";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Stack,
+  Typography,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ChordOptionAnswers } from "../reusable/labelEnums";
 import { ChordReturn } from "../audio/types";
 
-const audioPlayers: ChordReturn[] = [
-  {
-    audioPlayer: <GMajorAudioPlayer />,
-    answer: ChordOptionAnswers.G_major,
-  },
-  {
-    audioPlayer: <DMajorAudioPlayer />,
-    answer: ChordOptionAnswers.D_major,
-  },
-  // Add more audio players as needed
-];
-
-const selectRandomAudioPlayer = (): ChordReturn | null => {
-  const randomIndex = Math.floor(Math.random() * audioPlayers.length);
-  return audioPlayers[randomIndex] || null;
+const enum Feedback {
+  Correct = "Correct",
+  Incorrect = "Incorrect",
+}
+type ChordQuizFormProps = {
+  currentQuestion: ChordReturn;
+  onQuestionAnswered?: (question: ChordReturn) => void;
+  isExpanded: boolean;
 };
-
-export const ChordQuizForm: React.FC = () => {
-  const [currentQuestion, setCurrentQuestion] = useState<ChordReturn | null>(
-    selectRandomAudioPlayer
-  );
-
+export const ChordQuizForm: React.FC<ChordQuizFormProps> = ({
+  currentQuestion,
+  isExpanded,
+  onQuestionAnswered,
+}) => {
+  const [answeredQuestions, setAnsweredQuestions] = useState<ChordReturn[]>([]);
   const [userAnswer, setUserAnswer] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
 
   const handleGuess = (guess: ChordOptionAnswers): void => {
-    console.log("!!guess", guess);
     setUserAnswer(guess);
     // Perform validation or check against correct answer
     if (guess === currentQuestion?.answer) {
-      setFeedback("Correct!");
+      setFeedback(Feedback.Correct);
+      setAnsweredQuestions([...answeredQuestions, currentQuestion!]);
       // Set a new random question after a correct guess
-      setCurrentQuestion(selectRandomAudioPlayer());
+      // setCurrentQuestion(selectRandomAudioPlayer());
+      onQuestionAnswered && onQuestionAnswered(currentQuestion);
     } else {
-      setFeedback("Incorrect. Try again.");
+      setFeedback(Feedback.Incorrect);
     }
   };
 
   return (
     <Stack direction='column' spacing={2} padding={3}>
-      <Typography variant='h4'>Question</Typography>
-      {currentQuestion && <>{currentQuestion.audioPlayer}</>}
-      <ChordAnswerOptions onGuess={handleGuess} />
-      {feedback && <Typography>{feedback}</Typography>}
+      {currentQuestion && (
+        <Accordion defaultExpanded={isExpanded}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            {/* //TODO: Add check and X for correct/incorrect answers */}
+            <Typography variant='h4'>Question</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            {currentQuestion.audioPlayer}
+            <ChordAnswerOptions onGuess={handleGuess} />
+            {feedback && <Typography>{feedback}</Typography>}
+          </AccordionDetails>
+        </Accordion>
+      )}
     </Stack>
   );
 };
