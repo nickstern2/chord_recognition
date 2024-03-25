@@ -1,14 +1,8 @@
 import React from "react";
-import logo from "./logo.svg";
+import Home from "./pages/home";
 
 function App() {
-  return (
-    <div className='App'>
-      <header className='App-header'>
-        <p>here</p>
-      </header>
-    </div>
-  );
+  return <Home />;
 }
 
 export default App;
