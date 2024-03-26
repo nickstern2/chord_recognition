@@ -14,6 +14,7 @@ export const AudioPlayerGenerator: FC<AudioPlayerGeneratorProps> = ({
       src={`${process.env.PUBLIC_URL}/audio/${chordFilePath}`}
       controls
       loop
+      // autoPlay
     />
   );
 };
