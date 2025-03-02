@@ -3,7 +3,7 @@ export enum Titles {
   barreChords = "Barre Chords",
   triads = "Triads",
 }
-
+//
 export enum MajorChordTypes {
   AMinor = "A Minor",
   BMinor = "B Minor",
